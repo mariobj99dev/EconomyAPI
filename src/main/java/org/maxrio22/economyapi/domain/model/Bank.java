@@ -1,4 +1,4 @@
-package org.maxrio22.economyapi.core.domain;
+package org.maxrio22.economyapi.domain.model;
 public class Bank {
     private int id;
     private String name;

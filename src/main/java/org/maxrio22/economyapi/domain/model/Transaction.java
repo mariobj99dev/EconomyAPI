@@ -1,4 +1,4 @@
-package org.maxrio22.economyapi.core.domain;
+package org.maxrio22.economyapi.domain.model;
 public class Transaction {
     private int id;
     private int senderAccount;
