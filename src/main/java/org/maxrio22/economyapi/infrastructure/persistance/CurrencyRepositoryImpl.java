@@ -81,4 +81,58 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 
         return currencies;
     }
+
+    @Override
+    public boolean createCurrency(Currency currency) {
+        String sql = "INSERT INTO currencies (name, symbol, exchange_rate, inflation_rate) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, currency.getName());
+            stmt.setString(2, currency.getSymbol());
+            stmt.setFloat(3, currency.getExchangeRate());
+            stmt.setFloat(4, currency.getInflationRate());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            Bukkit.getLogger().severe("❌ Error al crear la moneda: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateCurrency(Currency currency) {
+        String sql = "UPDATE currencies SET name = ?, symbol = ?, exchange_rate = ?, inflation_rate = ? WHERE id = ?";
+
+        try (Connection conn = database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, currency.getName());
+            stmt.setString(2, currency.getSymbol());
+            stmt.setFloat(3, currency.getExchangeRate());
+            stmt.setFloat(4, currency.getInflationRate());
+            stmt.setInt(5, currency.getId());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            Bukkit.getLogger().severe("❌ Error al actualizar la moneda con ID " + currency.getId() + ": " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteCurrency(int id) {
+        String sql = "DELETE FROM currencies WHERE id = ?";
+
+        try (Connection conn = database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            Bukkit.getLogger().severe("❌ Error al eliminar la moneda con ID " + id + ": " + e.getMessage());
+            return false;
+        }
+    }
 }

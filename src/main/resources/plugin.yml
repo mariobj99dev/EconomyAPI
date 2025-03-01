@@ -2,3 +2,24 @@ name: EconomyAPI
 version: '${project.version}'
 main: org.maxrio22.economyapi.infrastructure.plugin.Main
 api-version: '1.21'
+commands:
+  getcurrency:
+    description: Obtiene información sobre una divisa.
+    usage: /getcurrency <id>
+    permission: economyapi.getcurrency
+  getcurrencies:
+    description: Obtiene información de todas las divisas.
+    usage: /getcurrencies
+    permission: economyapi.getcurrencies
+  createcurrency:
+    description: Crea una nueva divisa.
+    usage: /createcurrency <name> <symbol> <exchange_rate> <inflation_rate>
+    permission: economyapi.createcurrency
+  updatecurrency:
+    description: Actualiza una divisa existente.
+    usage: /updatecurrency <id> <name> <symbol> <exchange_rate> <inflation_rate>
+    permission: economyapi.updatecurrency
+  deletecurrency:
+    description: Elimina una divisa.
+    usage: /deletecurrency <id>
+    permission: economyapi.deletecurrency
