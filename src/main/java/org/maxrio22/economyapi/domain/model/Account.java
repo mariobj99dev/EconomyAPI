@@ -1,14 +1,26 @@
 package org.maxrio22.economyapi.domain.model;
 public class Account {
     private int id;
+    private String iban;
     private String ownerType;
     private String ownerId;
-    private int currencyId;
     private int bankId;
     private float balance;
     private String type;
     private boolean blocked;
     private String createdAt;
+
+    public Account(int id, String iban, String ownerType, String ownerId, int bankId, float balance, String type, boolean blocked, String createdAt) {
+        this.id = id;
+        this.iban = iban;
+        this.ownerType = ownerType;
+        this.ownerId = ownerId;
+        this.bankId = bankId;
+        this.balance = balance;
+        this.type = type;
+        this.blocked = blocked;
+        this.createdAt = createdAt;
+    }
 
     public int getId() {
         return id;
@@ -16,6 +28,14 @@ public class Account {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
     public String getOwnerType() {
@@ -32,14 +52,6 @@ public class Account {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public int getCurrencyId() {
-        return currencyId;
-    }
-
-    public void setCurrencyId(int currencyId) {
-        this.currencyId = currencyId;
     }
 
     public int getBankId() {

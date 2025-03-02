@@ -2,7 +2,9 @@ name: EconomyAPI
 version: '${project.version}'
 main: org.maxrio22.economyapi.infrastructure.plugin.Main
 api-version: '1.21'
+
 commands:
+  # 📌 CURRENCY COMMANDS
   getcurrency:
     description: Obtiene información sobre una divisa.
     usage: /getcurrency <id>
@@ -23,3 +25,51 @@ commands:
     description: Elimina una divisa.
     usage: /deletecurrency <id>
     permission: economyapi.deletecurrency
+
+  # 📌 BANK COMMANDS
+  getbank:
+    description: Obtiene información sobre un banco.
+    usage: /getbank <id>
+    permission: economyapi.getbank
+  getbanks:
+    description: Obtiene información de todos los bancos.
+    usage: /getbanks
+    permission: economyapi.getbanks
+  createbank:
+    description: Crea un nuevo banco.
+    usage: /createbank <name> <currency_id> <reserve_ratio> <interest_rate> <loan_interest_rate> <transaction_fee>
+    permission: economyapi.createbank
+  updatebank:
+    description: Actualiza un banco existente.
+    usage: /updatebank <id> <name> <currency_id> <reserve_ratio> <interest_rate> <loan_interest_rate> <transaction_fee> <status>
+    permission: economyapi.updatebank
+  deletebank:
+    description: Elimina un banco.
+    usage: /deletebank <id>
+    permission: economyapi.deletebank
+
+  # 📌 ACCOUNT COMMANDS
+  getaccount:
+    description: Obtiene información sobre una cuenta.
+    usage: /getaccount <id>
+    permission: economyapi.getaccount
+  getaccountbyiban:
+    description: Obtiene una cuenta a partir de su IBAN.
+    usage: /getaccountbyiban <iban>
+    permission: economyapi.getaccountbyiban
+  getaccounts:
+    description: Obtiene información de todas las cuentas.
+    usage: /getaccounts
+    permission: economyapi.getaccounts
+  createaccount:
+    description: Crea una nueva cuenta bancaria.
+    usage: /createaccount <owner_type> <owner_id> <bank_id> <balance> <type>
+    permission: economyapi.createaccount
+  updateaccount:
+    description: Actualiza una cuenta existente.
+    usage: /updateaccount <id> <balance> <bloqueado:true/false>
+    permission: economyapi.updateaccount
+  deleteaccount:
+    description: Elimina una cuenta bancaria.
+    usage: /deleteaccount <id>
+    permission: economyapi.deleteaccount

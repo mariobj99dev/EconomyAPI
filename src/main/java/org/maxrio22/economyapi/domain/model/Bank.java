@@ -11,6 +11,19 @@ public class Bank {
     private String status;
     private String createdAt;
 
+    public Bank(int id, String name, String ownerAccount, int currencyId, float reserveRatio, float interestRate, float loanInterestRate, float transactionFee, String status, String createdAt) {
+        this.id = id;
+        this.name = name;
+        this.ownerAccount = ownerAccount;
+        this.currencyId = currencyId;
+        this.reserveRatio = reserveRatio;
+        this.interestRate = interestRate;
+        this.loanInterestRate = loanInterestRate;
+        this.transactionFee = transactionFee;
+        this.status = status;
+        this.createdAt = createdAt;
+    }
+
     public int getId() {
         return id;
     }

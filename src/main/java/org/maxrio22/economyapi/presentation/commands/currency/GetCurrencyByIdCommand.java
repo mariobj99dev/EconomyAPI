@@ -3,18 +3,17 @@ package org.maxrio22.economyapi.presentation.commands.currency;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.maxrio22.economyapi.application.usecase.currency.GetCurrencyUseCase;
+import org.maxrio22.economyapi.application.usecase.currency.GetCurrencyByIdUseCase;
 import org.maxrio22.economyapi.domain.model.Currency;
 
-public class GetCurrencyCommand implements CommandExecutor {
-    private final GetCurrencyUseCase getCurrencyUseCase;
+public class GetCurrencyByIdCommand implements CommandExecutor {
+    private final GetCurrencyByIdUseCase getCurrencyByIdUseCase;
 
-    public GetCurrencyCommand(GetCurrencyUseCase getCurrencyUseCase) {
-        this.getCurrencyUseCase = getCurrencyUseCase;
+    public GetCurrencyByIdCommand(GetCurrencyByIdUseCase getCurrencyByIdUseCase) {
+        this.getCurrencyByIdUseCase = getCurrencyByIdUseCase;
     }
 
     @Override
@@ -26,7 +25,7 @@ public class GetCurrencyCommand implements CommandExecutor {
 
         try {
             int currencyId = Integer.parseInt(args[0]);
-            Currency currency = getCurrencyUseCase.execute(currencyId);
+            Currency currency = getCurrencyByIdUseCase.execute(currencyId);
 
             if (currency != null) {
                 sender.sendMessage(Component.text("✅ Moneda encontrada:").color(TextColor.color(0x3F704D)));
