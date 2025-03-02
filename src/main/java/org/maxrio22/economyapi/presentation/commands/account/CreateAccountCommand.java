@@ -28,8 +28,8 @@ public class CreateAccountCommand implements CommandExecutor {
 
         Player player = (Player) sender;
         String ownerType = args[0];
-        String accountType = args[3];
-        String owner = "";
+        String accountType = args[2];
+        String owner;
 
         switch (ownerType) {
             case "player":
@@ -38,13 +38,14 @@ public class CreateAccountCommand implements CommandExecutor {
             case "company":
                 owner = "NIF [TODO]";
                 break;
-            case "goverment":
+            case "government":
                 owner = "goverment";
                 break;
             case "bank":
                 owner = "bank";
                 break;
             default:
+                sender.sendMessage("❌ El tipo de cuenta es invalida. \nTipos disponibles: [player,company,government,bank]");
                 return true;
         }
 

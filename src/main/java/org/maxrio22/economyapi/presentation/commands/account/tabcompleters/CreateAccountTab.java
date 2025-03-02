@@ -18,9 +18,6 @@ public class CreateAccountTab implements TabCompleter {
             return Collections.singletonList("<bank_id>"); // ID del banco
         }
         if (args.length == 3) {
-            return Collections.singletonList("<currency_id>"); // ID de la moneda
-        }
-        if (args.length == 4) {
             return Arrays.asList("personal", "shared", "bank"); // ID de la moneda
         }
         return Collections.emptyList();

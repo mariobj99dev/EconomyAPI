@@ -90,7 +90,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Override
     public boolean createAccount(Account account) {
         if (account.getIban() == null || account.getIban().isEmpty()) {
-            String generatedIban = generateIban(account.getBankId());
+            String generatedIban = generateIban(account.getBankId(),account.getOwnerType());
             if (generatedIban == null) {
                 Bukkit.getLogger().severe("❌ No se pudo generar el IBAN para el banco con ID " + account.getBankId());
                 return false;
@@ -184,37 +184,70 @@ public class AccountRepositoryImpl implements AccountRepository {
         );
     }
 
-    private int getNextAccountNumber() {
-        String sql = "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_NAME = 'accounts'";
+    private int getNextAccountNumber(int bankId, String ibanPrefix, String year) {
+        String sql = "SELECT SUBSTRING_INDEX(iban, '-', -1) AS account_number " +
+                "FROM accounts " +
+                "WHERE bank_id = ? AND iban LIKE ? " +
+                "ORDER BY CAST(account_number AS UNSIGNED) ASC";
+
+        List<Integer> existingNumbers = new ArrayList<>();
 
         try (Connection conn = database.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            if (rs.next()) {
-                return rs.getInt(1);
+            stmt.setInt(1, bankId);
+            stmt.setString(2, ibanPrefix + "-" + String.format("%02d", bankId) + "-" + year + "-%"); // Filtrar por tipo, banco y año
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    existingNumbers.add(rs.getInt("account_number"));
+                }
             }
         } catch (SQLException e) {
-            Bukkit.getLogger().severe("❌ Error al obtener el siguiente número de cuenta: " + e.getMessage());
+            Bukkit.getLogger().severe("❌ Error al obtener los números de cuenta para el banco " + bankId + ": " + e.getMessage());
         }
 
-        return 1;
+        // Buscar el primer número de IBAN faltante en la secuencia
+        int expectedNumber = 1;
+        for (int num : existingNumbers) {
+            if (num != expectedNumber) {
+                return expectedNumber; // Se encontró un hueco, usar este número
+            }
+            expectedNumber++;
+        }
+
+        return expectedNumber;
     }
 
-    private String generateIban(int bankId) {
+    private String generateIban(int bankId, String accountType) {
         if (bankRepository.getBankById(bankId) == null) {
             Bukkit.getLogger().severe("❌ Error: El banco con ID " + bankId + " no existe.");
             return null;
         }
 
-        String countryCode = "MC"; // Código del país
-        String bankCode = String.format("%02d", bankId); // Formatea el ID del banco a 2 dígitos (01, 02, etc.)
-        String year = String.valueOf(java.time.Year.now().getValue()); // Obtiene el año actual
-        String accountNumber = String.format("%010d", getNextAccountNumber()); // Obtiene el siguiente ID de cuenta formateado a 10 dígitos
+        // Determinar el prefijo según el tipo de cuenta
+        String ibanPrefix;
+        switch (accountType.toLowerCase()) {
+            case "bank":
+                ibanPrefix = "BANK";
+                break;
+            case "player":
+                ibanPrefix = "PLAY";
+                break;
+            case "company":
+                ibanPrefix = "COMP";
+                break;
+            case "government":
+                ibanPrefix = "GOVT";
+                break;
+            default:
+                Bukkit.getLogger().severe("❌ Tipo de cuenta desconocido: " + accountType);
+                return null;
+        }
 
-        String iban = countryCode + "-" + bankCode + "-" + year + "-" + accountNumber;
-        return iban;
+        String bankCode = String.format("%02d", bankId); // ID del banco formateado a 2 dígitos
+        String year = String.valueOf(java.time.Year.now().getValue()); // Año actual
+        int accountNumber = getNextAccountNumber(bankId, ibanPrefix, year); // Obtener el número de cuenta disponible
+
+        return String.format("%s-%s-%s-%04d", ibanPrefix, bankCode, year, accountNumber);
     }
-
-
 }

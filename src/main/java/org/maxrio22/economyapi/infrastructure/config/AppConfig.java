@@ -42,8 +42,6 @@ public class AppConfig {
         this.database = DatabaseConnection.getInstance();
         this.currencyRepository = new CurrencyRepositoryImpl(database);
         this.bankRepository = new BankRepositoryImpl(database);
-
-        // CUIDADO QUE TIENES QUE PASARLE BANK REPOSITORY A TODA LA APP
         this.accountRepository = new AccountRepositoryImpl(database, bankRepository);
 
         // Currency Use Cases
@@ -56,7 +54,7 @@ public class AppConfig {
         // Bank Use Cases
         this.getBankByIdUseCase = new GetBankByIdUseCase(bankRepository);
         this.getAllBanksUseCase = new GetAllBanksUseCase(bankRepository);
-        this.createBankUseCase = new CreateBankUseCase(bankRepository);
+        this.createBankUseCase = new CreateBankUseCase(bankRepository, accountRepository);
         this.updateBankUseCase = new UpdateBankUseCase(bankRepository);
         this.deleteBankUseCase = new DeleteBankUseCase(bankRepository);
 

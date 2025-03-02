@@ -5,10 +5,7 @@ import org.maxrio22.economyapi.domain.model.Bank;
 import org.maxrio22.economyapi.domain.repository.BankRepository;
 import org.maxrio22.economyapi.infrastructure.database.DatabaseConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,11 +63,12 @@ public class BankRepositoryImpl implements BankRepository {
     }
 
     @Override
-    public boolean createBank(Bank bank) {
+    public int createBank(Bank bank) {
         String sql = "INSERT INTO banks (name, owner_account, currency_id, reserve_ratio, interest_rate, loan_interest_rate, transaction_fee, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        int bankId = -1; // Valor por defecto en caso de error
 
         try (Connection conn = database.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, bank.getName());
             stmt.setString(2, bank.getOwnerAccount());
@@ -81,12 +79,21 @@ public class BankRepositoryImpl implements BankRepository {
             stmt.setFloat(7, bank.getTransactionFee());
             stmt.setString(8, bank.getStatus());
 
-            return stmt.executeUpdate() > 0;
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        bankId = generatedKeys.getInt(1); // Obtener el ID generado
+                    }
+                }
+            }
         } catch (SQLException e) {
             Bukkit.getLogger().severe("❌ Error al crear el banco: " + e.getMessage());
-            return false;
         }
+
+        return bankId;
     }
+
 
     @Override
     public boolean updateBank(Bank bank) {

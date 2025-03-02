@@ -8,7 +8,7 @@ import java.util.List;
 public interface BankRepository {
     Bank getBankById(int id);
     List<Bank> getAllBanks();
-    boolean createBank(Bank Bank);
+    int createBank(Bank Bank);
     boolean updateBank(Bank Bank);
     boolean deleteBank(int id);
 }
